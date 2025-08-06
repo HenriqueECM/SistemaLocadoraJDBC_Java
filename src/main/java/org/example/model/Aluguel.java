@@ -1,12 +1,14 @@
 package org.example.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Aluguel {
     private int id, clienteId, filmeId;
-    private Date dataDevolucao, dataAluguel;
+    private Date dataDevolucao;
+    private LocalDate dataAluguel;
 
-    public Aluguel(int id, int clienteId, int filmeId, Date dataAluguel, Date dataDevolucao){
+    public Aluguel(int id, int clienteId, int filmeId, LocalDate dataAluguel, Date dataDevolucao){
         this.id = id;
         this.clienteId = clienteId;
         this.filmeId = filmeId;
@@ -14,7 +16,7 @@ public class Aluguel {
         this.dataDevolucao = dataDevolucao;
     }
 
-    public Aluguel(int clienteId, int filmeId, Date dataAluguel, Date dataDevolucao){
+    public Aluguel(int clienteId, int filmeId, LocalDate dataAluguel, Date dataDevolucao){
         this.clienteId = clienteId;
         this.filmeId = filmeId;
         this.dataAluguel = dataAluguel;
@@ -53,11 +55,11 @@ public class Aluguel {
         this.dataDevolucao = dataDevolucao;
     }
 
-    public Date getDataAluguel() {
+    public LocalDate getDataAluguel() {
         return dataAluguel;
     }
 
-    public void setDataAluguel(Date dataAluguel) {
+    public void setDataAluguel(LocalDate dataAluguel) {
         this.dataAluguel = dataAluguel;
     }
 }

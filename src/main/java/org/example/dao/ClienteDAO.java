@@ -4,7 +4,10 @@ import org.example.model.Cliente;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClienteDAO {
 
@@ -23,5 +26,28 @@ public class ClienteDAO {
         } catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public List<Cliente> listarClientes(){
+        String query = "SELECT id, nome, email FROM cliente";
+        List<Cliente> clientes = new ArrayList<>();
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                clientes.add(new Cliente(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("email")
+                ));
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return clientes;
     }
 }
