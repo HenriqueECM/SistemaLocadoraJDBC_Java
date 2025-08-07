@@ -21,7 +21,7 @@ public class ClienteDAO {
             stmt.setString(2, cliente.getEmail());
             stmt.executeUpdate();
 
-            System.out.println("Cliente cadastrado com sucesso!");
+            System.out.println("\nCliente cadastrado com sucesso!");
 
         } catch (SQLException e){
             e.printStackTrace();

@@ -1,11 +1,12 @@
 package org.example.dao;
 
 import org.example.model.Aluguel;
+import org.example.model.AluguelDevolucao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AluguelDAO {
     public void cadastrarAluguel (Aluguel aluguel){
@@ -19,8 +20,126 @@ public class AluguelDAO {
             stmt.setDate(3, Date.valueOf(aluguel.getDataAluguel()));
             stmt.executeUpdate();
 
-            System.out.println("Aluguel cadastrado com sucesso!");
+            System.out.println("\nAluguel cadastrado com sucesso!");
         } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public List<Aluguel> listarAluguel(){
+        String query = "SELECT id, cliente_id, filme_id, dataAluguel, dataDevolucao FROM aluguel";
+
+        List<Aluguel> aluguels = new ArrayList<>();
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                int id = rs.getInt("id");
+                int cliente_id = rs.getInt("cliente_id");
+                int filme_id = rs.getInt("filme_id");
+                LocalDate dataAluguel = rs.getDate("dataAluguel").toLocalDate();
+                Date dataDevolucao = rs.getDate("dataDevolucao");
+
+                Aluguel aluguel = new Aluguel(id, cliente_id, filme_id, dataAluguel, dataDevolucao);
+                aluguels.add(aluguel);
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return aluguels;
+    }
+
+    public List<Aluguel> listarAluguelPendente(){
+        String query = "SELECT id, cliente_id, filme_id, dataAluguel, dataDevolucao FROM aluguel WHERE dataDevolucao IS NULL";
+
+        List<Aluguel> aluguels = new ArrayList<>();
+
+        try(Connection conm = Conexao.conectar();
+            PreparedStatement stmt = conm.prepareStatement(query)){
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                int id = rs.getInt("id");
+                int cliente_id = rs.getInt("cliente_id");
+                int filme_id = rs.getInt("filme_id");
+                LocalDate dataAluguel = rs.getDate("dataAluguel").toLocalDate();
+                Date dataDevolucao = rs.getDate("dataDevolucao");
+
+                Aluguel aluguel = new Aluguel(id, cliente_id, filme_id, dataAluguel, dataDevolucao);
+
+                aluguels.add(aluguel);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return aluguels;
+    }
+
+    public static listarFilmePorCliente(int id){
+        String query = "SELECT c.nome, f.id AS idFilme, f.titulo, f.genero, f.anoLancamento FROM aluguel a LEFT JOIN filme f ON a.filme_id = f.id LEFT JOIN cliente c ON a.cliente_id = c.id WHERE c.id = ? ORDER BY f.id";
+
+        int newId = 0;
+        String nome = "";
+        int idFilme = 0;
+        String titulo = "";
+        String genero = "";
+        int anoLancamento = 0;
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<AluguelDevolucao> listarAluguelDevolucao(){
+        String query = "SELECT a.id, f.titulo AS tituloFilme, c.nome AS nomeCliente, a.dataAluguel FROM aluguel a LEFT JOIN filme f ON a.filme_id = f.id LEFT JOIN cliente c ON a.cliente_id = c.id WHERE dataDevolucao IS NULL";
+
+        List<AluguelDevolucao> devolucaos = new ArrayList<>();
+
+        try (Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String tituloFilme = rs.getString("tituloFilme");
+                String nomeCliente = rs.getString("nomeCliente");
+                LocalDate dataAluguel = rs.getDate("dataAluguel").toLocalDate();
+
+                AluguelDevolucao devolucao = new AluguelDevolucao(dataAluguel, id, tituloFilme, nomeCliente);
+                devolucaos.add(devolucao);
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return devolucaos;
+    }
+
+    public void registroDevolucao(int id){
+        String query = "UPDATE aluguel SET dataDevolucao = ? WHERE id = ?";
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setDate(1, Date.valueOf(LocalDate.now()));
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+
+            System.out.println("\nFilme devolvido com sucesso!");
+        }catch (SQLException e){
             e.printStackTrace();
         }
     }

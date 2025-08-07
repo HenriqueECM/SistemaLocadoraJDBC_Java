@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import com.sun.security.jgss.GSSUtil;
+import org.example.model.Aluguel;
 import org.example.model.Filme;
 
 import java.sql.Connection;
@@ -22,7 +23,7 @@ public class FilmeDAO {
             stmt.setInt(3, filme.getAnoLancamento());
             stmt.executeUpdate();
 
-            System.out.println("Filme cadastrado com sucesso!");
+            System.out.println("\nFilme cadastrado com sucesso!");
         } catch (SQLException e){
             e.printStackTrace();
         }

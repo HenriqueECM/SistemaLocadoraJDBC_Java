@@ -4,6 +4,7 @@ import org.example.dao.AluguelDAO;
 import org.example.dao.ClienteDAO;
 import org.example.dao.FilmeDAO;
 import org.example.model.Aluguel;
+import org.example.model.AluguelDevolucao;
 import org.example.model.Cliente;
 import org.example.model.Filme;
 
@@ -23,11 +24,25 @@ public class Main {
 
         boolean sair = false;
 
-        System.out.println("========MENU=======");
-        System.out.println("1 - CADASTRAR CLIENTE");
-        System.out.println("2 - CADASTRAR FILME");
-        System.out.println("3 - ALUGAR FILME");
-        System.out.println("0 - SAIR");
+        System.out.print("""
+
+╔══════════════════════════════════════════════════════════╗
+║                 🎬 LOCADORA DE FILMES 🎬                ║
+╠══════════════════════════════════════════════════════════╣
+║  1 - Cadastrar Cliente                                   ║
+║  2 - Cadastrar Filme                                     ║
+║  3 - Alugar Filme                                        ║
+║  4 - Devolver Filme                                      ║
+║  5 - Listar Todos Clientes                               ║
+║  6 - Listar Todos Filmes                                 ║
+║  7 - Listar Todos Aluguéis                               ║
+║  8 - Listar Aluguéis Pendentes                           ║
+║  9 - Listar Filmes por Cliente                           ║
+║  10 - Listar Clientes por Filme                          ║
+║  0 - Sair                                                ║
+╚══════════════════════════════════════════════════════════╝
+Escolha uma operação do sistema: """);
+
         int opcao = SC.nextInt();
         SC.nextLine();
 
@@ -44,6 +59,29 @@ public class Main {
                 alugarFilme();
                 break;
             }
+            case 4: {
+                devolverFilme();
+                break;
+            }
+            case 5: {
+                listarCliente();
+                break;
+            }
+            case 6: {
+                listarFilme();
+                break;
+            }
+            case 7: {
+                listarAluguel();
+                break;
+            }
+            case 8: {
+                listarAlugueisPendentes();
+                break;
+            }
+            case 9: {
+                listarFilmePorCliente();
+            }
             case 0: {
                 sair = true;
                 System.out.println("Sistema finalizado!");
@@ -56,14 +94,84 @@ public class Main {
         }
     }
 
+    private static void listarFilmePorCliente() {
+
+    }
+
+    private static void listarAlugueisPendentes() {
+        AluguelDAO aluguelDao = new AluguelDAO();
+
+        List<Aluguel> aluguels = aluguelDao.listarAluguelPendente();
+
+        System.out.println("\nLISTA DE ALUGUÉIS PENDENTES: ");
+        for (Aluguel aluguel : aluguels){
+            System.out.println("-------------------------------------------------------------------------------------------");
+            System.out.println("Id: " + aluguel.getId() + " | ClienteID: " + aluguel.getClienteId() + " | FilmeID: " + aluguel.getFilmeId() + " | Data Aluguel: " + aluguel.getDataAluguel() + " | Data Devolução: " + aluguel.getDataDevolucao());
+        }
+    }
+
+    private static void listarAluguel() {
+        AluguelDAO aluguelDao = new AluguelDAO();
+
+        List<Aluguel> aluguels = aluguelDao.listarAluguel();
+
+        System.out.println("\nLISTA DE TODOS ALUGUÉIS: ");
+        for(Aluguel aluguel : aluguels){
+            System.out.println("-------------------------------------------------------------------------------------------");
+            System.out.println("Id: " + aluguel.getId() + " | ClienteID: " + aluguel.getClienteId() + " | FilmeID: " + aluguel.getFilmeId() + " | Data Aluguel: " + aluguel.getDataAluguel() + " | Data Devolução: " + aluguel.getDataDevolucao());
+        }
+    }
+
+    private static void listarFilme() {
+        FilmeDAO filmeDao = new FilmeDAO();
+
+        List<Filme> filmes = filmeDao.listarFilmes();
+
+        System.out.println("\nLISTA DE TODOS FILMES: ");
+        for (Filme filme: filmes){
+            System.out.println("-----------------------------------------------------------------------------------------");
+            System.out.println("Id: " + filme.getId() + " Titulo: " + filme.getTitulo() + " Genero: " + filme.getGenero() + " Ano Lançamento: " + filme.getAnoLancamento());
+        }
+    }
+
+    private static void listarCliente() {
+        ClienteDAO clienteDao = new ClienteDAO();
+
+        List<Cliente> clientes = clienteDao.listarClientes();
+
+        System.out.println("\nLISTA DE TODOS CLIENTES: ");
+        for (Cliente cliente : clientes){
+            System.out.println("------------------------------------------------------------");
+            System.out.println("Id: " + cliente.getId() + " Nome: " + cliente.getNome() + " Email: " + cliente.getEmail());
+        }
+    }
+
+    private static void devolverFilme() {
+
+        AluguelDAO aluguelDAO = new AluguelDAO();
+
+        List<AluguelDevolucao> devolucaos = aluguelDAO.listarAluguelDevolucao();
+
+        for (AluguelDevolucao devolucao : devolucaos){
+            System.out.println("-------------------------------------------------------------------------------------------------------------");
+            System.out.println("IdAluguel: " + devolucao.getId() + " | Nome Filme: " + devolucao.getTituloFilme() + " | Cliente: " + devolucao.getClienteNome() + " | Data de Locação: " + devolucao.getDataAluguel());
+        }
+
+        System.out.print("\nDigite o id do Aluguel que deseja devolver: ");
+        int idAluguel = SC.nextInt();
+        SC.nextLine();
+
+        aluguelDAO.registroDevolucao(idAluguel);
+    }
+
     private static void cadastrarFilme() {
-        System.out.println("Digite o titulo do filme: ");
+        System.out.print("\nDigite o titulo do filme: ");
         String titulo = SC.nextLine();
 
-        System.out.println("Digite o genero do filme: ");
+        System.out.print("Digite o genero do filme: ");
         String genero = SC.nextLine();
 
-        System.out.println("Digite o ano de lançamento: ");
+        System.out.print("Digite o ano de lançamento: ");
         int anoLancamento = SC.nextInt();
 
         Filme filme = new Filme(titulo, genero, anoLancamento);
@@ -73,10 +181,10 @@ public class Main {
     }
 
     public static  void cadastrarCliente(){
-        System.out.println("Digite o nome cliente: ");
+        System.out.print("\nDigite o nome cliente: ");
         String nome = SC.nextLine();
 
-        System.out.println("Digite o email do cliente: ");
+        System.out.print("Digite o email do cliente: ");
         String email = SC.nextLine();
 
         Cliente cliente = new Cliente(nome, email);
@@ -92,9 +200,10 @@ public class Main {
         List<Cliente> clientes = clienteDao.listarClientes();
 
         for(Cliente cliente: clientes){
+            System.out.println("------------------------------------------------------------");
             System.out.println("Id: " + cliente.getId() + " Nome: " + cliente.getNome() + " Email: " + cliente.getEmail());
         }
-        System.out.println("\nDigite o id do cliente que ira fazer locação: ");
+        System.out.print("\nDigite o id do cliente que ira fazer locação: ");
         int idCliente = SC.nextInt();
         SC.nextLine();
 
@@ -103,9 +212,10 @@ public class Main {
         List<Filme> filmes = filmeDao.listarFilmes();
 
         for (Filme filme: filmes){
+            System.out.println("-----------------------------------------------------------------------------------------");
             System.out.println("Id: " + filme.getId() + " Titulo: " + filme.getTitulo() + " Genero: " + filme.getGenero() + " Ano Lançamento: " + filme.getAnoLancamento());
         }
-        System.out.println("\nDigite o id do filme que será alugado: ");
+        System.out.print("\nDigite o id do filme que será alugado: ");
         int idFilme = SC.nextInt();
         SC.nextLine();
 

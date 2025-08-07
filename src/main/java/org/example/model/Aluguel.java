@@ -23,6 +23,12 @@ public class Aluguel {
         this.dataDevolucao = dataDevolucao;
     }
 
+    // Sobrecarga para devolução
+    public Aluguel(LocalDate dataAluguel, int id){
+        this.id = id;
+        this.dataAluguel = dataAluguel;
+    }
+
     public int getId() {
         return id;
     }
