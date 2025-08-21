@@ -7,6 +7,7 @@ public class Aluguel {
     private int id, clienteId, filmeId;
     private Date dataDevolucao;
     private LocalDate dataAluguel;
+    private Filme filme;
 
     public Aluguel(int id, int clienteId, int filmeId, LocalDate dataAluguel, Date dataDevolucao){
         this.id = id;
@@ -27,6 +28,10 @@ public class Aluguel {
     public Aluguel(LocalDate dataAluguel, int id){
         this.id = id;
         this.dataAluguel = dataAluguel;
+    }
+
+    public Aluguel() {
+
     }
 
     public int getId() {
@@ -67,5 +72,13 @@ public class Aluguel {
 
     public void setDataAluguel(LocalDate dataAluguel) {
         this.dataAluguel = dataAluguel;
+    }
+
+    public Filme getFilme() {
+        return filme;
+    }
+
+    public void setFilme(Filme filme) {
+        this.filme = filme;
     }
 }
