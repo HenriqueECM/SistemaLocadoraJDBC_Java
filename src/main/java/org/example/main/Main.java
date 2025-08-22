@@ -83,6 +83,10 @@ Escolha uma operação do sistema: """);
                 listarFilmePorCliente();
                 break;
             }
+            case 10: {
+                listarClientePorFilme();
+                break;
+            }
             case 0: {
                 sair = true;
                 System.out.println("Sistema finalizado!");
@@ -95,8 +99,26 @@ Escolha uma operação do sistema: """);
         }
     }
 
+    private static void listarClientePorFilme() {
+        System.out.println("Digite o ID do filme: ");
+        int filmeId = SC.nextInt();
+
+        AluguelDAO aluguelDAO = new AluguelDAO();
+        List<Aluguel> aluguels = aluguelDAO.listarClientePorFilme(filmeId);
+
+        for(Aluguel aluguel : aluguels){
+            System.out.println("ID do aluguel: " + aluguel.getId()
+                    + " | ID do cliente: " + aluguel.getCliente().getId()
+                    + " | Nome do cliente: " + aluguel.getCliente().getNome()
+                    + " | Email: " + aluguel.getCliente().getEmail()
+                    + " | Data Aluguel: " + aluguel.getDataAluguel()
+                    + " | Data Devolução: " + (aluguel.getDataDevolucao() != null ? aluguel.getDataDevolucao() : "Ainda não devolvido"));
+        }
+
+    }
+
     private static void listarFilmePorCliente() {
-        System.out.print("Informe o ID do cliente: ");
+        System.out.print("Digite o ID do cliente: ");
         int clienteId = SC.nextInt();
 
         AluguelDAO aluguelDao = new AluguelDAO();

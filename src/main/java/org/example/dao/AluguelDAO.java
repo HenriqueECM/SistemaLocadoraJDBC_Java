@@ -2,6 +2,7 @@ package org.example.dao;
 
 import org.example.model.Aluguel;
 import org.example.model.AluguelDevolucao;
+import org.example.model.Cliente;
 import org.example.model.Filme;
 
 import java.sql.*;
@@ -80,6 +81,52 @@ public class AluguelDAO {
         return aluguels;
     }
 
+    public List<Aluguel> listarClientePorFilme(int filmeId){
+        String query = "SELECT f.titulo, a.id AS idAluguel, c.id AS idCliente, c.nome AS nomeCliente, c.email, a.dataAluguel, a.dataDevolucao " +
+                "FROM aluguel a " +
+                "JOIN filme f ON a.filme_id = f.id " +
+                "JOIN cliente c ON a.cliente_id = c.id " +
+                "WHERE f.id = ? " +
+                "ORDER BY f.id";
+
+        List<Aluguel> alugueis = new ArrayList<>();
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1, filmeId);
+            ResultSet rs = stmt.executeQuery();
+
+            String nomeFilme = null;
+
+            while(rs.next()){
+                if (nomeFilme == null){
+                    nomeFilme = rs.getString("titulo");
+                    System.out.println("Nome do Filme: " + nomeFilme);
+                }
+
+                int id = rs.getInt("idCliente");
+                String nome = rs.getString("nomeCliente");
+                String email = rs.getString("email");
+
+                Cliente cliente = new Cliente(id, nome, email);
+
+                Aluguel aluguel = new Aluguel();
+
+                aluguel.setId(rs.getInt("idAluguel"));
+                aluguel.setCliente(cliente);
+                aluguel.setDataAluguel(rs.getDate("dataAluguel").toLocalDate());
+                Date dataDevolucao = rs.getDate("dataDevolucao");
+                aluguel.setDataDevolucao(dataDevolucao != null ? dataDevolucao : null);
+
+                alugueis.add(aluguel);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return alugueis;
+    }
+
     public List<Aluguel> listarFilmePorCliente(int clienteId){
         String query = "SELECT c.nome AS nomeCliente, a.id AS idAluguel, f.id AS idFilme, f.titulo, f.genero, f.anoLancamento, a.dataAluguel, a.dataDevolucao " +
                 "FROM aluguel a " +
@@ -116,7 +163,6 @@ public class AluguelDAO {
                 aluguel.setId(rs.getInt("idAluguel"));
                 aluguel.setFilme(filme);
                 aluguel.setDataAluguel(rs.getDate("dataAluguel").toLocalDate());
-
                 Date dataDevolucao = rs.getDate("dataDevolucao");
                 aluguel.setDataDevolucao(dataDevolucao != null ? dataDevolucao : null);
 

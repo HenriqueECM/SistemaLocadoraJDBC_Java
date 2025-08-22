@@ -8,6 +8,7 @@ public class Aluguel {
     private Date dataDevolucao;
     private LocalDate dataAluguel;
     private Filme filme;
+    private Cliente cliente;
 
     public Aluguel(int id, int clienteId, int filmeId, LocalDate dataAluguel, Date dataDevolucao){
         this.id = id;
@@ -80,5 +81,13 @@ public class Aluguel {
 
     public void setFilme(Filme filme) {
         this.filme = filme;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 }
